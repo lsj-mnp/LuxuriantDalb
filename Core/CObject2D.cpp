@@ -240,6 +240,16 @@ const DirectX::XMMATRIX& CObject2D::GetWorldMatrix() const
 	return m_ComponentTransform.WorldMatrix;
 }
 
+const DirectX::XMVECTOR& CObject2D::GetTranslation() const
+{
+	return m_ComponentTransform.Translation;
+}
+
+const DirectX::XMVECTOR& CObject2D::GetRotation() const
+{
+	return m_ComponentTransform.Rotation;
+}
+
 void CObject2D::UpdateWorldMatrix()
 {
 	DirectX::XMMATRIX Translation{ DirectX::XMMatrixTranslationFromVector(m_ComponentTransform.Translation) };

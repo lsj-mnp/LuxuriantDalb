@@ -15,14 +15,14 @@ public:
 	void Create(CShader* const VSDefault_Instanced, CShader* const PSDefault, CShader* const PSDefault_Colorize,
 		size_t SStarCount, size_t SPlanetCount, size_t MPlanetCount, size_t LPlanetCount);
 
-	void Update();
+	void Update(float DeltaTime);
 
 	void Draw(const DirectX::XMMATRIX& ProjectionMatrix);
 
 private:
 	void InitializeObject2D(CObject2D* Object2D, CShader* Shader, size_t InstanceCount, int MinY, int MaxY, int MinSize, int MaxSize);
 
-	void UpdateObject2D(CObject2D* Object2D, float DeltaY, int MinY, int MaxY, int MinSize, int MaxSize);
+	void UpdateObject2D(CObject2D* Object2D, float DeltaY, int MinY, int MaxY, int MinSize, int MaxSize, float DeltaTime);
 
 	void DrawObject2D(CObject2D* Object2D, const DirectX::XMMATRIX& ProjectionMatrix);
 

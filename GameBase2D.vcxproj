@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\CBullet.cpp" />
     <ClCompile Include="Core\CConstantBuffer.cpp" />
     <ClCompile Include="Core\CGame.cpp" />
     <ClCompile Include="Core\CObject2D.cpp" />
@@ -131,6 +132,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\CBullet.h" />
     <ClInclude Include="Core\CConstantBuffer.h" />
     <ClInclude Include="Core\CGame.h" />
     <ClInclude Include="Core\CObject2D.h" />

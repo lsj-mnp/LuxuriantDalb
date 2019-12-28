@@ -26,7 +26,7 @@ struct STriangle
 struct SInstanceCPUData
 {
 	std::string Name{};
-	DirectX::XMVECTOR Translation{};
+	DirectX::XMVECTOR Translation{ 0, 0, 0, 1 };
 	DirectX::XMVECTOR Rotation{};
 	DirectX::XMVECTOR Scaling{ 1, 1, 1, 0 };
 };
@@ -42,7 +42,7 @@ public:
 	struct SComponentTransform
 	{
 		DirectX::XMMATRIX WorldMatrix{ DirectX::XMMatrixIdentity() };
-		DirectX::XMVECTOR Translation{};
+		DirectX::XMVECTOR Translation{ 0, 0, 0, 1 };
 		DirectX::XMVECTOR Rotation{};
 		DirectX::XMVECTOR Scaling{ 1, 1, 1, 0 };
 	};
@@ -174,6 +174,10 @@ public:
 	void ScaleTo(const DirectX::XMVECTOR& Scaling);
 
 	const DirectX::XMMATRIX& GetWorldMatrix() const;
+
+	const DirectX::XMVECTOR& GetTranslation() const;
+
+	const DirectX::XMVECTOR& GetRotation() const;
 
 private:
 	void UpdateWorldMatrix();

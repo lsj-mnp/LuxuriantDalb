@@ -28,6 +28,7 @@
     <ClCompile Include="Core\CStarPool.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\CBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\CGame.h">
@@ -112,6 +113,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\CStarPool.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CBullet.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

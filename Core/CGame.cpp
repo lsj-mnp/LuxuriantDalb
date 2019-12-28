@@ -1,6 +1,7 @@
 #include "CGame.h"
 
 using std::string;
+using std::make_unique;
 
 void CGame::Create(HINSTANCE hInstance, WNDPROC WndProc, const string& WindowName)
 {
@@ -22,6 +23,9 @@ void CGame::Create(HINSTANCE hInstance, WNDPROC WndProc, const string& WindowNam
 	
 	m_PSDefault_Colorize = std::make_unique<CShader>(m_Device.Get(), m_DeviceContext.Get());
 	m_PSDefault_Colorize->Create(EShaderType::PixelShader, L"Shader/PSDefault.hlsl", "Colorize");
+
+	m_PlayerBullet = make_unique<CBullet>(m_Device.Get(), m_DeviceContext.Get());
+	m_PlayerBullet->Create("Asset/bullet.png");
 }
 
 
@@ -187,6 +191,8 @@ bool CGame::AddObject2D(const std::string& Name, const std::string& TextureFileN
 void CGame::SetPlayerObject2D(const std::string& Name)
 {
 	m_PlayerObject2DIndex = m_UMapObject2DNameToIndex.at(Name);
+
+	m_PlayerBullet->Link(GetPlayerObject2D());
 }
 
 CObject2D* CGame::GetPlayerObject2D() const
@@ -198,7 +204,7 @@ void CGame::CreateStarPool()
 {
 	m_StarPool = std::make_unique<CStarPool>(m_Device.Get(), m_DeviceContext.Get());
 
-	m_StarPool->Create(m_VSDefault_Instanced.get(), m_PSDefault.get(), m_PSDefault_Colorize.get(), 800, 5, 3, 2);
+	m_StarPool->Create(m_VSDefault_Instanced.get(), m_PSDefault.get(), m_PSDefault_Colorize.get(), 200, 5, 3, 2);
 }
 
 CObject2D* CGame::GetObject2DPtr(const std::string& Name) const
@@ -227,6 +233,25 @@ CShader* CGame::GetShader(EShader eShader)
 	return nullptr;
 }
 
+void CGame::SpawnPlayerBullet()
+{
+	m_PlayerBullet->Spawn(700.0f);
+}
+
+void CGame::Update()
+{
+	m_CurrTime = m_Clock.now().time_since_epoch().count();
+	if (m_PrevTime == 0) m_PrevTime = m_CurrTime;
+	m_DeltaTime_ns = m_CurrTime - m_PrevTime;
+	m_DeltaTime_us = (float)((double)(m_DeltaTime_ns) / 1000.0);
+	m_DeltaTime_ms = (float)((double)(m_DeltaTime_us) / 1000.0);
+	m_DeltaTime_s = (float)((double)(m_DeltaTime_ms) / 1000.0);
+
+	m_PrevTime = m_CurrTime;
+
+	m_PlayerBullet->Update(GetDeltaTime(), DirectX::XMFLOAT2(m_Width, m_Height));
+}
+
 void CGame::BeginRendering(const float* ColorRGBA)
 {
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), ColorRGBA);
@@ -248,9 +273,13 @@ void CGame::Draw()
 			DrawObject2D(Object2D);
 		}
 
-		m_StarPool->Update();
+		m_StarPool->Update(GetDeltaTime());
 
 		m_StarPool->Draw(m_ProjectionMatrix);
+
+		m_VSDefault->Use();
+
+		m_PlayerBullet->Draw(m_ProjectionMatrix);
 
 		CObject2D* const PlayerObject2D{ m_vObject2Ds[m_PlayerObject2DIndex].get() };
 		DrawObject2D(PlayerObject2D);
@@ -288,5 +317,20 @@ void CGame::DrawObject2D(CObject2D* const Object2D)
 DirectX::Keyboard::State CGame::GetKeyboardState() const
 {
 	return m_Keyboard.GetState();
+}
+
+float CGame::GetDeltaTime() const
+{
+	return m_DeltaTime_s;
+}
+
+float CGame::GetWidth() const
+{
+	return m_Width;
+}
+
+float CGame::GetHeight() const
+{
+	return m_Height;
 }
 

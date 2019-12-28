@@ -5,18 +5,19 @@ LRESULT WINAPI WndProc(_In_ HWND hWnd, _In_ UINT Msg, _In_ WPARAM wParam, _In_ L
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-	int SmallStarCount{ 1000 };
-	int LargePlanetCount{ 2 };
-	int MiddlePlanetCount{ 3 };
-	int SmallPlanetCount{ 5 };
+	using namespace DirectX;
+
+	static constexpr float KWidth{ 1280.0f };
+	static constexpr float KHeight{ 720.0f };
 
 	srand((unsigned int)GetTickCount64());
 
-	CGame Game{1280, 720};
+	CGame Game{ KWidth, KHeight };
 
 	Game.Create(hInstance, WndProc, "GameBase");
 
-	Game.AddObject2D("Player", DirectX::XMFLOAT2(220, 220), "Asset/ship_210_anim.png");
+	Game.AddObject2D("Player", DirectX::XMFLOAT2(220, 220), "Asset/dalb_anim.png");
+	Game.GetObject2DPtr("Player")->ScaleTo(DirectX::XMVectorSet(0.5f, 0.5f, 1, 0));
 
 	Game.AddObject2D("BG", DirectX::XMFLOAT2(1280.0f, 1280.0f), "Asset/BackGround.png");
 
@@ -29,6 +30,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	float BackgroundColor[]{ 0.0f, 0.0f, 0.0f, 1.0f };
 
 	int iFrame{};
+
+	bool IsZKeyDown{};
+
 	while (true)
 	{
 		if (PeekMessage(&Msg, nullptr, 0, 0, PM_REMOVE))
@@ -38,21 +42,39 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				break;
 			}
 
+			if (Msg.message == WM_CHAR)
+			{
+				if (Msg.wParam == 'z')
+				{
+					IsZKeyDown = true;
+				}
+			}
+
 			TranslateMessage(&Msg);
 
 			DispatchMessage(&Msg);
 		}
 		else
 		{
+			Game.Update();
+
+			float DeltaTime{ Game.GetDeltaTime() };
+
 			DirectX::Keyboard::State KeyboardState{ Game.GetKeyboardState() };
 
 			CObject2D* const PlayerObject2D{ Game.GetPlayerObject2D() };
 
-			if (KeyboardState.Up) { PlayerObject2D->Translate(DirectX::XMVectorSet(0, +3, 0, 0)); }
-			if (KeyboardState.Down) { PlayerObject2D->Translate(DirectX::XMVectorSet(0, -3, 0, 0)); }
-			if (KeyboardState.Right) { PlayerObject2D->Translate(DirectX::XMVectorSet(+3, 0, 0, 0)); }
-			if (KeyboardState.Left) { PlayerObject2D->Translate(DirectX::XMVectorSet(-3, 0, 0, 0)); }
-			   
+			static float PlayerSpeed{ 400.0f };
+
+			float PlayerX{ DirectX::XMVectorGetX(PlayerObject2D->GetTranslation()) };
+			float PlayerY{ DirectX::XMVectorGetY(PlayerObject2D->GetTranslation()) };
+
+			if (KeyboardState.Up && PlayerY < +KHeight * 0.5f) { PlayerObject2D->Translate(DirectX::XMVectorSet(0, +PlayerSpeed, 0, 0) * DeltaTime); }
+			if (KeyboardState.Down && PlayerY > -KHeight * 0.5f) { PlayerObject2D->Translate(DirectX::XMVectorSet(0, -PlayerSpeed, 0, 0) * DeltaTime); }
+			if (KeyboardState.Right && PlayerX < +KWidth * 0.5f) { PlayerObject2D->Translate(DirectX::XMVectorSet(+PlayerSpeed, 0, 0, 0) * DeltaTime); }
+			if (KeyboardState.Left && PlayerX > -KWidth * 0.5f) { PlayerObject2D->Translate(DirectX::XMVectorSet(-PlayerSpeed, 0, 0, 0) * DeltaTime); }
+			if (IsZKeyDown) { Game.SpawnPlayerBullet(); IsZKeyDown = false; }
+
 			Game.BeginRendering(BackgroundColor);
 
 			Game.GetPlayerObject2D()->SetVisibleArea(DirectX::XMFLOAT2((float)(iFrame * 220), 0));

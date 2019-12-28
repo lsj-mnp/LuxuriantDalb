@@ -37,12 +37,13 @@ void CStarPool::Create(CShader* const VSDefault_Instanced, CShader* const PSDefa
 	InitializeObject2D(m_SPlanet.get(), PSDefault, SPlanetCount, -360, 1000, 5, 15);
 }
 
-void CStarPool::Update()
+void CStarPool::Update(float DeltaTime)
 {
-	UpdateObject2D(m_SStar.get(), -1.5f, +370, +1370, 5, 5);
-	UpdateObject2D(m_LPlanet.get(), -0.5f, +370, +1370, 5, 15);
-	UpdateObject2D(m_MPlanet.get(), -0.8f, +370, +1370, 5, 15);
-	UpdateObject2D(m_SPlanet.get(), -1.2f, +370, +1370, 5, 15);
+	float SpeedFactor{ 1.5f };
+	UpdateObject2D(m_SStar.get(), -150.0f * SpeedFactor, +370, +1370, 5, 5, DeltaTime);
+	UpdateObject2D(m_LPlanet.get(), -50.0f * SpeedFactor, +370, +1370, 5, 15, DeltaTime);
+	UpdateObject2D(m_MPlanet.get(), -80.0f * SpeedFactor, +370, +1370, 5, 15, DeltaTime);
+	UpdateObject2D(m_SPlanet.get(), -120.0f * SpeedFactor, +370, +1370, 5, 15, DeltaTime);
 }
 
 void CStarPool::Draw(const DirectX::XMMATRIX& ProjectionMatrix)
@@ -72,12 +73,14 @@ void CStarPool::InitializeObject2D(CObject2D* Object2D, CShader* PS, size_t Inst
 	Object2D->UpdateInstanceBuffer();
 }
 
-void CStarPool::UpdateObject2D(CObject2D* Object2D, float DeltaY, int MinY, int MaxY, int MinSize, int MaxSize)
+void CStarPool::UpdateObject2D(CObject2D* Object2D, float DeltaY, int MinY, int MaxY, int MinSize, int MaxSize, float DeltaTime)
 {
+	using namespace DirectX;
+
 	for (size_t iInstance = 0; iInstance < Object2D->GetInstanceCount(); ++iInstance)
 	{
 		float Scaling{ DirectX::XMVectorGetX(Object2D->GetInstanceScaling(iInstance)) };
-		Object2D->TranslateInstance(iInstance, DirectX::XMVectorSet(0.0f, DeltaY / Scaling, 0.0f, 0.0f));
+		Object2D->TranslateInstance(iInstance, DirectX::XMVectorSet(0.0f, DeltaY / Scaling, 0.0f, 0.0f) * DeltaTime);
 
 		if (DirectX::XMVectorGetY(Object2D->GetInstanceTranslation(iInstance)) < -450.0f)
 		{

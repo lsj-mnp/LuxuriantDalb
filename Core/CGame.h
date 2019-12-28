@@ -5,9 +5,13 @@
 #include "CConstantBuffer.h"
 #include "CObject2D.h"
 #include "CStarPool.h"
+#include "CBullet.h"
+#include <chrono>
 
 class CGame
 {
+	using time_type = long long;
+
 public:
 	enum class EShader
 	{
@@ -62,6 +66,11 @@ public:
 	CShader* GetShader(EShader eShader);
 
 public:
+	void SpawnPlayerBullet();
+
+public:
+	void Update();
+
 	void BeginRendering(const float* ColorRGBA);
 
 	void Draw();
@@ -73,6 +82,13 @@ private:
 
 public:
 	DirectX::Keyboard::State GetKeyboardState() const;
+
+	float GetDeltaTime() const;
+
+public:
+	float GetWidth() const;
+
+	float GetHeight() const;
 
 private:
 	HINSTANCE m_hInstance{};
@@ -90,6 +106,9 @@ private:
 
 private:
 	std::unique_ptr<CStarPool> m_StarPool{};
+
+private:
+	std::unique_ptr<CBullet> m_PlayerBullet{};
 
 private:
 	std::vector<std::unique_ptr<CObject2D>> m_vObject2Ds{};
@@ -111,6 +130,15 @@ private:
 
 private:
 	DirectX::Keyboard m_Keyboard{};
+
+private:
+	std::chrono::steady_clock m_Clock{};
+	time_type m_PrevTime{};
+	time_type m_CurrTime{};
+	time_type m_DeltaTime_ns{};
+	float m_DeltaTime_us{}; // u == micro
+	float m_DeltaTime_ms{}; // m == milli
+	float m_DeltaTime_s{};
 
 private:
 	int m_PlayerObject2DIndex{};
