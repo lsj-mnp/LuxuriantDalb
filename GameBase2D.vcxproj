@@ -23,6 +23,7 @@
     <ProjectGuid>{CDABDC1F-AE54-46BD-A49C-2A286761F58C}</ProjectGuid>
     <RootNamespace>GameBase2D</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>LuxuriantDlab</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
