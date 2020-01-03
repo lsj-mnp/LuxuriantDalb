@@ -322,24 +322,49 @@ void CObject2D::TranslateInstanceTo(const std::string& Name, const DirectX::XMVE
 	TranslateInstanceTo(index, Translation);
 }
 
-void CObject2D::RotateInstance(const std::string& Name, const DirectX::XMVECTOR& Rotation)
+void CObject2D::RotateInstance(size_t InstanceID, const DirectX::XMVECTOR& Rotation)
 {
 	using namespace DirectX;
 
-	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
-	m_vInstanceCPUData[index].Rotation += Rotation;
+	m_vInstanceCPUData[InstanceID].Rotation += Rotation;
 
-	UpdateInstanceWorldMatrix(Name);
+	UpdateInstanceWorldMatrix(InstanceID);
+}
+
+void CObject2D::RotateInstance(const std::string& Name, const DirectX::XMVECTOR& Rotation)
+{
+	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
+	RotateInstance(index, Rotation);
+}
+
+void CObject2D::RotateInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Rotation)
+{
+	using namespace DirectX;
+
+	m_vInstanceCPUData[InstanceID].Rotation = Rotation;
+
+	UpdateInstanceWorldMatrix(InstanceID);
+}
+
+void CObject2D::RotateInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Rotation)
+{
+	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
+	RotateInstanceTo(index, Rotation);
+}
+
+void CObject2D::ScaleInstance(size_t InstanceID, const DirectX::XMVECTOR& Scaling)
+{
+	using namespace DirectX;
+
+	m_vInstanceCPUData[InstanceID].Scaling += Scaling;
+
+	UpdateInstanceWorldMatrix(InstanceID);
 }
 
 void CObject2D::ScaleInstance(const std::string& Name, const DirectX::XMVECTOR& Scaling)
 {
-	using namespace DirectX;
-
 	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
-	m_vInstanceCPUData[index].Scaling += Scaling;
-
-	UpdateInstanceWorldMatrix(Name);
+	ScaleInstance(index, Scaling);
 }
 
 void CObject2D::ScaleInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Scaling)

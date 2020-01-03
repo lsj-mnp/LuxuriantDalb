@@ -79,9 +79,11 @@ void CStarPool::UpdateObject2D(CObject2D* Object2D, float DeltaY, int MinY, int 
 
 	for (size_t iInstance = 0; iInstance < Object2D->GetInstanceCount(); ++iInstance)
 	{
-		float Scaling{ DirectX::XMVectorGetX(Object2D->GetInstanceScaling(iInstance)) };
-		Object2D->TranslateInstance(iInstance, DirectX::XMVectorSet(0.0f, DeltaY / Scaling, 0.0f, 0.0f) * DeltaTime);
+		float Scale{ DirectX::XMVectorGetX(Object2D->GetInstanceScaling(iInstance)) };
+		Object2D->RotateInstance(iInstance, DirectX::XMVectorSet(0.0f, 0.0f, 0.1f / Scale, 0.0f) * DeltaTime);
+		Object2D->TranslateInstance(iInstance, DirectX::XMVectorSet(0.0f, DeltaY / Scale, 0.0f, 0.0f) * DeltaTime);
 
+		//화면을 벗어났을 경우 위치 변경 역할을 함.
 		if (DirectX::XMVectorGetY(Object2D->GetInstanceTranslation(iInstance)) < -450.0f)
 		{
 			float RandomSize{ GetRandomFloat(MinSize, MaxSize) * 0.1f };

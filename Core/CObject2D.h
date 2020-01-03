@@ -187,20 +187,19 @@ public:
 
 	bool InsertInstance();
 
-	void TranslateInstance(size_t instanceID, const DirectX::XMVECTOR& Translation);
-
+	void TranslateInstance(size_t InstanceID, const DirectX::XMVECTOR& Translation);
 	void TranslateInstance(const std::string& Name, const DirectX::XMVECTOR& Translation);
-
 	void TranslateInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Translation);
-
 	void TranslateInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Translation);
 
+	void RotateInstance(size_t InstanceID, const DirectX::XMVECTOR& Rotation);
 	void RotateInstance(const std::string& Name, const DirectX::XMVECTOR& Rotation);
+	void RotateInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Rotation);
+	void RotateInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Rotation);
 
+	void ScaleInstance(size_t InstanceID, const DirectX::XMVECTOR& Scaling);
 	void ScaleInstance(const std::string& Name, const DirectX::XMVECTOR& Scaling);
-
 	void ScaleInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Scaling);
-
 	void ScaleInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Scaling);
 
 	bool HasInstances() const;
