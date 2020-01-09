@@ -31,6 +31,18 @@
     <ClCompile Include="Core\CBullet.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\CEnemyPool.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\CPhysicsEngine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\CBoundingCircleRep.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\CObject2DLine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\CGame.h">
@@ -118,6 +130,18 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\CBullet.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CEnemyPool.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CPhysicsEngine.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CBoundingCircleRep.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CObject2DLine.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

@@ -124,19 +124,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\CBoundingCircleRep.cpp" />
     <ClCompile Include="Core\CBullet.cpp" />
     <ClCompile Include="Core\CConstantBuffer.cpp" />
+    <ClCompile Include="Core\CEnemyPool.cpp" />
     <ClCompile Include="Core\CGame.cpp" />
     <ClCompile Include="Core\CObject2D.cpp" />
+    <ClCompile Include="Core\CObject2DLine.cpp" />
+    <ClCompile Include="Core\CPhysicsEngine.cpp" />
     <ClCompile Include="Core\CShader.cpp" />
     <ClCompile Include="Core\CStarPool.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\CBoundingCircleRep.h" />
     <ClInclude Include="Core\CBullet.h" />
     <ClInclude Include="Core\CConstantBuffer.h" />
+    <ClInclude Include="Core\CEnemyPool.h" />
     <ClInclude Include="Core\CGame.h" />
     <ClInclude Include="Core\CObject2D.h" />
+    <ClInclude Include="Core\CObject2DLine.h" />
+    <ClInclude Include="Core\CPhysicsEngine.h" />
     <ClInclude Include="Core\CShader.h" />
     <ClInclude Include="Core\CStarPool.h" />
     <ClInclude Include="Core\Math.h" />

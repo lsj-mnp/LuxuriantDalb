@@ -1,6 +1,7 @@
 #include "CShader.h"
 
-void CShader::Create(EShaderType eShaderType, const std::wstring& FileName, const std::string& EntryPoint)
+void CShader::Create(EShaderType eShaderType, const std::wstring& FileName, const std::string& EntryPoint,
+	const D3D11_INPUT_ELEMENT_DESC* const InputElements, size_t InputElementCount)
 {
 	m_eShaderType = eShaderType;
 
@@ -13,8 +14,11 @@ void CShader::Create(EShaderType eShaderType, const std::wstring& FileName, cons
 		m_PtrDevice->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr,
 			(ID3D11VertexShader**)m_Shader.ReleaseAndGetAddressOf());
 
-		m_PtrDevice->CreateInputLayout(KInputElementDesc, ARRAYSIZE(KInputElementDesc), m_Blob->GetBufferPointer(),
-			m_Blob->GetBufferSize(), m_InputLayout.ReleaseAndGetAddressOf());
+		if (InputElements && InputElementCount)
+		{
+			m_PtrDevice->CreateInputLayout(InputElements, InputElementCount, m_Blob->GetBufferPointer(),
+				m_Blob->GetBufferSize(), m_InputLayout.ReleaseAndGetAddressOf());
+		}
 		break;
 	case EShaderType::PixelShader:
 		D3DCompileFromFile(FileName.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, EntryPoint.c_str(), "ps_4_0",

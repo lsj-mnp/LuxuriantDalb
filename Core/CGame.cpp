@@ -13,10 +13,12 @@ void CGame::Create(HINSTANCE hInstance, WNDPROC WndProc, const string& WindowNam
 	InitializeDirectX();
 
 	m_VSDefault = std::make_unique<CShader>(m_Device.Get(), m_DeviceContext.Get());
-	m_VSDefault->Create(EShaderType::VertexShader, L"Shader/VSDefault.hlsl", "main");
+	m_VSDefault->Create(EShaderType::VertexShader, L"Shader/VSDefault.hlsl", "main", 
+		CObject2D::KInputElementDesc, ARRAYSIZE(CObject2D::KInputElementDesc));
 
 	m_VSDefault_Instanced = std::make_unique<CShader>(m_Device.Get(), m_DeviceContext.Get());
-	m_VSDefault_Instanced->Create(EShaderType::VertexShader, L"Shader/VSDefault.hlsl", "Instanced");
+	m_VSDefault_Instanced->Create(EShaderType::VertexShader, L"Shader/VSDefault.hlsl", "Instanced",
+		CObject2D::KInputElementDesc, ARRAYSIZE(CObject2D::KInputElementDesc));
 
 	m_PSDefault = std::make_unique<CShader>(m_Device.Get(), m_DeviceContext.Get());
 	m_PSDefault->Create(EShaderType::PixelShader, L"Shader/PSDefault.hlsl", "main");
@@ -207,6 +209,22 @@ void CGame::CreateStarPool()
 	m_StarPool->Create(m_VSDefault_Instanced.get(), m_PSDefault.get(), m_PSDefault_Colorize.get(), 200, 5, 3, 2);
 }
 
+void CGame::CreateEnemyPool()
+{
+	m_EnemyPool = std::make_unique<CEnemyPool>(m_Device.Get(), m_DeviceContext.Get());
+
+	m_EnemyPool->Create(m_VSDefault_Instanced.get(), m_PSDefault.get(), &m_PhysicsEngine);
+
+	SEnemyTypeData EnemySlave{};
+	EnemySlave.Damage = 10.0f;
+	EnemySlave.HitPoint = 10.0f;
+	EnemySlave.Speed = 100.0f;
+
+	m_EnemyPool->AddEnemyType("EnemySlave", "Asset/enemy_slave.png", EnemySlave);
+
+	m_EnemyPool->SpawnEnemy("EnemySlave", DirectX::XMVectorSet(660.0f, 260.0f, 0, 1), DirectX::XMVectorSet(-1.0f, 0, 0, 1));
+}
+
 CObject2D* CGame::GetObject2DPtr(const std::string& Name) const
 {
 	size_t index{ m_UMapObject2DNameToIndex.at(Name) };
@@ -250,6 +268,8 @@ void CGame::Update()
 	m_PrevTime = m_CurrTime;
 
 	m_PlayerBullet->Update(GetDeltaTime(), DirectX::XMFLOAT2(m_Width, m_Height));
+
+	m_PhysicsEngine.Execute(GetDeltaTime());
 }
 
 void CGame::BeginRendering(const float* ColorRGBA)
@@ -276,6 +296,8 @@ void CGame::Draw()
 		m_StarPool->Update(GetDeltaTime());
 
 		m_StarPool->Draw(m_ProjectionMatrix);
+
+		m_EnemyPool->Draw(m_ProjectionMatrix);
 
 		m_VSDefault->Use();
 

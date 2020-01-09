@@ -2,17 +2,6 @@
 
 #include "SharedHeader.h"
 
-static constexpr D3D11_INPUT_ELEMENT_DESC KInputElementDesc[]
-{
-	{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}, 
-	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0},
-
-	{"INSTANCE_WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,  0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-	{"INSTANCE_WORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-	{"INSTANCE_WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-	{"INSTANCE_WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1}
-};
-
 class CShader
 {
 public:
@@ -25,7 +14,8 @@ public:
 	~CShader() {}
 
 public:
-	void Create(EShaderType eShaderType, const std::wstring& FileName, const std::string& EntryPoint);
+	void Create(EShaderType eShaderType, const std::wstring& FileName, const std::string& EntryPoint,
+		const D3D11_INPUT_ELEMENT_DESC* const InputElements = nullptr, size_t InputElementCount = 0);
 
 	void Use();
 

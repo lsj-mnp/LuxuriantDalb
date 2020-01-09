@@ -6,6 +6,12 @@
 class CShader;
 class CConstantBuffer;
 
+struct SBoundingCircle
+{
+	DirectX::XMVECTOR Center{};
+	float Radius{};
+};
+
 struct SVertex2D
 {
 	SVertex2D() {}
@@ -29,6 +35,8 @@ struct SInstanceCPUData
 	DirectX::XMVECTOR Translation{ 0, 0, 0, 1 };
 	DirectX::XMVECTOR Rotation{};
 	DirectX::XMVECTOR Scaling{ 1, 1, 1, 0 };
+	bool bUsePhysics{ false };
+	DirectX::XMVECTOR Velocity{};
 };
 
 struct SInstanceGPUData
@@ -39,6 +47,17 @@ struct SInstanceGPUData
 class CObject2D
 {
 public:
+	static constexpr D3D11_INPUT_ELEMENT_DESC KInputElementDesc[]
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+		{"INSTANCE_WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,  0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{"INSTANCE_WORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{"INSTANCE_WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{"INSTANCE_WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1}
+	};
+
 	struct SComponentTransform
 	{
 		DirectX::XMMATRIX WorldMatrix{ DirectX::XMMatrixIdentity() };
@@ -201,6 +220,9 @@ public:
 	void ScaleInstance(const std::string& Name, const DirectX::XMVECTOR& Scaling);
 	void ScaleInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Scaling);
 	void ScaleInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Scaling);
+
+	void SetInstanceVelocity(size_t InstanceID, const DirectX::XMVECTOR& Velocity);
+	const DirectX::XMVECTOR& GetInstanceVelocity(size_t InstanceID);
 
 	bool HasInstances() const;
 

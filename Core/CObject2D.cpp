@@ -383,6 +383,18 @@ void CObject2D::ScaleInstanceTo(const std::string& Name, const DirectX::XMVECTOR
 	ScaleInstanceTo(index, Scaling);
 }
 
+void CObject2D::SetInstanceVelocity(size_t InstanceID, const DirectX::XMVECTOR& Velocity)
+{
+	m_vInstanceCPUData[InstanceID].Velocity = Velocity;
+	
+	m_vInstanceCPUData[InstanceID].bUsePhysics = true;
+}
+
+const DirectX::XMVECTOR& CObject2D::GetInstanceVelocity(size_t InstanceID)
+{
+	return m_vInstanceCPUData[InstanceID].Velocity;
+}
+
 bool CObject2D::HasInstances() const
 {
 	return (m_vInstanceCPUData.size() > 0) ? true : false;

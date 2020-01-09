@@ -21,10 +21,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	Game.AddObject2D("BG", DirectX::XMFLOAT2(1280.0f, 1280.0f), "Asset/BackGround.png");
 
-	Game.AddObject2D("EnemySlave", "Asset/enemy_slave.png");
-	Game.GetObject2DPtr("EnemySlave")->ScaleTo(DirectX::XMVectorSet(0.6f, 0.6f, 1, 0));
-
 	Game.CreateStarPool();
+
+	Game.CreateEnemyPool();
 
 	Game.SetPlayerObject2D("Player");
 
@@ -77,8 +76,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			if (KeyboardState.Right && PlayerX < +KWidth * 0.5f) { PlayerObject2D->Translate(DirectX::XMVectorSet(+PlayerSpeed, 0, 0, 0) * DeltaTime); }
 			if (KeyboardState.Left && PlayerX > -KWidth * 0.5f) { PlayerObject2D->Translate(DirectX::XMVectorSet(-PlayerSpeed, 0, 0, 0) * DeltaTime); }
 			if (IsZKeyDown) { Game.SpawnPlayerBullet(); IsZKeyDown = false; }
-
-			Game.GetObject2DPtr("EnemySlave")->Rotate(DirectX::XMVectorSet(0, 0, DirectX::XM_PIDIV4 * DeltaTime, 0));
 
 			Game.BeginRendering(BackgroundColor);
 

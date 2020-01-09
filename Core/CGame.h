@@ -6,6 +6,8 @@
 #include "CObject2D.h"
 #include "CStarPool.h"
 #include "CBullet.h"
+#include "CEnemyPool.h"
+#include "CPhysicsEngine.h"
 #include <chrono>
 
 class CGame
@@ -60,6 +62,9 @@ public:
 	void CreateStarPool();
 
 public:
+	void CreateEnemyPool();
+
+public:
 	CObject2D* GetObject2DPtr(const std::string& Name) const;
 
 public:
@@ -106,6 +111,12 @@ private:
 
 private:
 	std::unique_ptr<CStarPool> m_StarPool{};
+	
+private:
+	std::unique_ptr<CEnemyPool> m_EnemyPool{};
+
+private:
+	CPhysicsEngine m_PhysicsEngine{};
 
 private:
 	std::unique_ptr<CBullet> m_PlayerBullet{};
