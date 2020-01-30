@@ -3,6 +3,7 @@
 using std::string;
 using std::make_unique;
 
+//생성에 관련된 모든 함수 및 유니크 포인터를 모아둔 함수. 
 void CGame::Create(HINSTANCE hInstance, WNDPROC WndProc, const string& WindowName)
 {
 	m_hInstance = hInstance;
@@ -28,9 +29,13 @@ void CGame::Create(HINSTANCE hInstance, WNDPROC WndProc, const string& WindowNam
 
 	m_PlayerBullet = make_unique<CBullet>(m_Device.Get(), m_DeviceContext.Get());
 	m_PlayerBullet->Create("Asset/bullet.png");
+
+	m_Circle = std::make_unique<CBoundingCircleRep>(m_Device.Get(), m_DeviceContext.Get());
+	m_Circle->Create();
 }
 
 
+//윈도우 생성 함수. 윈도우 선언, 등록, 생성, show, 업데이트의 순서로 되어있다.
 void CGame::CreateWin32Window(const std::string& WindowName)
 {
 	WNDCLASSEX wnd_cls{};
@@ -56,6 +61,7 @@ void CGame::CreateWin32Window(const std::string& WindowName)
 	UpdateWindow(m_hWnd);
 }
 
+//DirectX의 초기 내용을 설정하는 함수.
 void CGame::InitializeDirectX()
 {
 	m_ProjectionMatrix = DirectX::XMMatrixOrthographicLH(m_Width, m_Height, 0.0f, 1.0f);
@@ -66,11 +72,14 @@ void CGame::InitializeDirectX()
 
 	CreateViewports();
 
+	SetViewport();
+
 	CreateSamplers();
 
 	CreateBlendStates();
 }
 
+//스왑체인 생성 함수. 스왑체인은 여러개의 버퍼를 담고 교체하는 역할을 한다.
 void CGame::CreateSwapChain()
 {
 	DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
@@ -94,6 +103,7 @@ void CGame::CreateSwapChain()
 		m_SwapChain.ReleaseAndGetAddressOf(), m_Device.ReleaseAndGetAddressOf(), nullptr, m_DeviceContext.ReleaseAndGetAddressOf());
 }
 
+//RenderTargetView를 생성하고 Set하는 함수. Output Merger에 Set한다. RenderTargetView는 어디에 그릴지 정하는 역할을 한다.
 void CGame::CreateAndSetRenderTargetView()
 {
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer{};
@@ -105,6 +115,7 @@ void CGame::CreateAndSetRenderTargetView()
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), nullptr);
 }
 
+//Viewport를 생성하는 함수. Viewport는 사용자에게 보여지는 영역을 말한다.
 void CGame::CreateViewports()
 {
 	m_Viewport.Height = m_Height;
@@ -115,11 +126,13 @@ void CGame::CreateViewports()
 	m_Viewport.TopLeftY = 0.0f;
 }
 
+//Viewport를 Set하는 함수. Resterizer Stage에 Set한다.
 void CGame::SetViewport()
 {
 	m_DeviceContext->RSSetViewports(1, &m_Viewport);
 }
 
+//Sampler State를 생성하는 함수. 
 void CGame::CreateSamplers()
 {
 	D3D11_SAMPLER_DESC sampler_desc{};
@@ -138,6 +151,7 @@ void CGame::CreateSamplers()
 	m_Device->CreateSamplerState(&sampler_desc, m_SamplerStateLinearWrap.ReleaseAndGetAddressOf());
 }
 
+//Blend State를 생성하는 함수.
 void CGame::CreateBlendStates()
 {
 	D3D11_BLEND_DESC blend_desc{};
@@ -154,6 +168,7 @@ void CGame::CreateBlendStates()
 	m_Device->CreateBlendState(&blend_desc, m_BlendStateAlpha.ReleaseAndGetAddressOf());
 }
 
+//Object2D를 추가하는 함수. Object2D는 Vector로 만들었다.
 bool CGame::AddObject2D(const std::string& Name, const DirectX::XMFLOAT2& Size, const std::string& TextureFileName)
 {
 	if (m_UMapObject2DNameToIndex.find(Name) != m_UMapObject2DNameToIndex.end())
@@ -172,6 +187,7 @@ bool CGame::AddObject2D(const std::string& Name, const DirectX::XMFLOAT2& Size, 
 	return true;
 }
 
+//AddObject2D를 텍스쳐의 사이즈를 자동으로 받는 함수로 함수 오버로딩한 함수.
 bool CGame::AddObject2D(const std::string& Name, const std::string& TextureFileName)
 {
 	if (m_UMapObject2DNameToIndex.find(Name) != m_UMapObject2DNameToIndex.end())
@@ -190,6 +206,7 @@ bool CGame::AddObject2D(const std::string& Name, const std::string& TextureFileN
 	return true;
 }
 
+//Player의 캐릭터 Object2D를 따로 Set하고 구분하기위해 만든 함수.
 void CGame::SetPlayerObject2D(const std::string& Name)
 {
 	m_PlayerObject2DIndex = m_UMapObject2DNameToIndex.at(Name);
@@ -197,6 +214,7 @@ void CGame::SetPlayerObject2D(const std::string& Name)
 	m_PlayerBullet->Link(GetPlayerObject2D());
 }
 
+//Player의 Object2D의 주소를 리턴하는 함수.
 CObject2D* CGame::GetPlayerObject2D() const
 {
 	return m_vObject2Ds[m_PlayerObject2DIndex].get();
@@ -225,6 +243,7 @@ void CGame::CreateEnemyPool()
 	m_EnemyPool->SpawnEnemy("EnemySlave", DirectX::XMVectorSet(660.0f, 260.0f, 0, 1), DirectX::XMVectorSet(-1.0f, 0, 0, 1));
 }
 
+//원하는 Index번째의 Object2D의 주소를 리턴하는 함수.
 CObject2D* CGame::GetObject2DPtr(const std::string& Name) const
 {
 	size_t index{ m_UMapObject2DNameToIndex.at(Name) };
@@ -251,6 +270,12 @@ CShader* CGame::GetShader(EShader eShader)
 	return nullptr;
 }
 
+const DirectX::XMMATRIX& CGame::GetProjectionMatrix() const
+{
+	return m_ProjectionMatrix;
+}
+
+//Player의 탄환을 생성하는 함수.
 void CGame::SpawnPlayerBullet()
 {
 	m_PlayerBullet->Spawn(700.0f);
@@ -277,6 +302,7 @@ void CGame::BeginRendering(const float* ColorRGBA)
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), ColorRGBA);
 }
 
+//Object2D를 제외하고 Draw가 필요한 모든 변수들을 한 번에 모아서 Draw 해주는 함수.
 void CGame::Draw()
 {
 	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateLinearWrap.GetAddressOf());
@@ -303,6 +329,8 @@ void CGame::Draw()
 
 		m_PlayerBullet->Draw(m_ProjectionMatrix);
 
+		m_Circle->Draw(m_ProjectionMatrix);
+
 		CObject2D* const PlayerObject2D{ m_vObject2Ds[m_PlayerObject2DIndex].get() };
 		DrawObject2D(PlayerObject2D);
 	}
@@ -313,6 +341,7 @@ void CGame::EndRendering()
 	m_SwapChain->Present(0, 0);
 }
 
+//Object2D의 Draw를 해주는 함수.
 void CGame::DrawObject2D(CObject2D* const Object2D)
 {
 	if (Object2D->HasInstances())
@@ -354,5 +383,15 @@ float CGame::GetWidth() const
 float CGame::GetHeight() const
 {
 	return m_Height;
+}
+
+ID3D11Device* CGame::GetDevice()
+{
+	return m_Device.Get();
+}
+
+ID3D11DeviceContext* CGame::GetDeviceContext()
+{
+	return m_DeviceContext.Get();
 }
 

@@ -5,6 +5,7 @@ using std::string;
 using std::to_string;
 using std::make_unique;
 
+//삼각형 생성에 필요한 정점정보 저장 및 버텍스 버퍼, 인덱스 버퍼를 생성하는 함수.
 void CObject2D::CModel2D::CreateRectangle(const DirectX::XMFLOAT2& Size)
 {
 	m_Size = Size;
@@ -56,6 +57,7 @@ void CObject2D::CModel2D::CreateRectangle(const DirectX::XMFLOAT2& Size)
 	}
 }
 
+//텍스쳐 좌표계에 삼각형의 좌표를 업데이트 해주는 함수.
 void CObject2D::CModel2D::UpdateRectangleTexCoord(const DirectX::XMFLOAT2& UVOffset, const DirectX::XMFLOAT2& UVSize)
 {
 	m_vVertices[0].TexCoord = UVOffset;
@@ -72,6 +74,7 @@ void CObject2D::CModel2D::UpdateRectangleTexCoord(const DirectX::XMFLOAT2& UVOff
 	}
 }
 
+//Input Assembler에 버퍼를 Set해주는 함수.
 void CObject2D::CModel2D::SetInputBuffers()
 {
 	m_PtrDeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &m_VBStride, &m_VBOffset);
@@ -181,6 +184,7 @@ void CObject2D::Draw(const DirectX::XMMATRIX& ProjectionMatrix)
 	}
 }
 
+//~만큼 이동시키는 함수.
 void CObject2D::Translate(const DirectX::XMVECTOR& Translation)
 {
 	using namespace DirectX;
@@ -190,6 +194,7 @@ void CObject2D::Translate(const DirectX::XMVECTOR& Translation)
 	UpdateWorldMatrix();
 }
 
+//~만큼 회전시키는 함수.
 void CObject2D::Rotate(const DirectX::XMVECTOR& Rotation)
 {
 	using namespace DirectX;
@@ -199,6 +204,7 @@ void CObject2D::Rotate(const DirectX::XMVECTOR& Rotation)
 	UpdateWorldMatrix();
 }
 
+//~만큼 크기변환시키는 함수.
 void CObject2D::Scale(const DirectX::XMVECTOR& Scaling)
 {
 	using namespace DirectX;
@@ -208,6 +214,7 @@ void CObject2D::Scale(const DirectX::XMVECTOR& Scaling)
 	UpdateWorldMatrix();
 }
 
+//~로 이동시키는 함수.
 void CObject2D::TranslateTo(const DirectX::XMVECTOR& Translation)
 {
 	using namespace DirectX;
@@ -217,6 +224,7 @@ void CObject2D::TranslateTo(const DirectX::XMVECTOR& Translation)
 	UpdateWorldMatrix();
 }
 
+//~로 회전시키는 함수.
 void CObject2D::RotateTo(const DirectX::XMVECTOR& Rotation)
 {
 	using namespace DirectX;
@@ -226,6 +234,7 @@ void CObject2D::RotateTo(const DirectX::XMVECTOR& Rotation)
 	UpdateWorldMatrix();
 }
 
+//~로 크기변환시키는 함수.
 void CObject2D::ScaleTo(const DirectX::XMVECTOR& Scaling)
 {
 	using namespace DirectX;
@@ -296,6 +305,7 @@ bool CObject2D::InsertInstance()
 	return InsertInstance(name);
 }
 
+//인스턴스를 ~만큼 이동시키는 함수. 몇 번째 인스턴스인지 Index를 받는 형태로 생성함.
 void CObject2D::TranslateInstance(size_t InstanceID, const DirectX::XMVECTOR& Translation)
 {
 	using namespace DirectX;
@@ -304,24 +314,28 @@ void CObject2D::TranslateInstance(size_t InstanceID, const DirectX::XMVECTOR& Tr
 	UpdateInstanceWorldMatrix(InstanceID);
 }
 
+//인스턴스의 이름을 받는 형태로 생성하는 TranslateInstance 함수 오버로드 함수.
 void CObject2D::TranslateInstance(const std::string& Name, const DirectX::XMVECTOR& Translation)
 {
 	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
 	TranslateInstance(index, Translation);
 }
 
+//인스턴스를 ~로 이동시키는 함수. 몇 번째 인스턴스인지 Index를 받는 형태로 생성함.
 void CObject2D::TranslateInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Translation)
 {
 	m_vInstanceCPUData[InstanceID].Translation = Translation;
 	UpdateInstanceWorldMatrix(InstanceID);
 }
 
+//인스턴스의 이름을 받는 형태로 생성하는 TranslateInstanceTo 함수 오버로드 함수.
 void CObject2D::TranslateInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Translation)
 {
 	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
 	TranslateInstanceTo(index, Translation);
 }
 
+//인스턴스를 ~만큼 회전시키는 함수. 몇 번째 인스턴스인지 Index를 받는 형태로 생성함.
 void CObject2D::RotateInstance(size_t InstanceID, const DirectX::XMVECTOR& Rotation)
 {
 	using namespace DirectX;
@@ -331,12 +345,14 @@ void CObject2D::RotateInstance(size_t InstanceID, const DirectX::XMVECTOR& Rotat
 	UpdateInstanceWorldMatrix(InstanceID);
 }
 
+//인스턴스의 이름을 받는 형태로 생성하는 RotateInstance 함수 오버로드 함수.
 void CObject2D::RotateInstance(const std::string& Name, const DirectX::XMVECTOR& Rotation)
 {
 	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
 	RotateInstance(index, Rotation);
 }
 
+//인스턴스를 ~로 회전시키는 함수. 몇 번째 인스턴스인지 Index를 받는 형태로 생성함.
 void CObject2D::RotateInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Rotation)
 {
 	using namespace DirectX;
@@ -346,12 +362,14 @@ void CObject2D::RotateInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Rot
 	UpdateInstanceWorldMatrix(InstanceID);
 }
 
+//인스턴스의 이름을 받는 형태로 생성하는 RotateInstanceTo 함수 오버로드 함수.
 void CObject2D::RotateInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Rotation)
 {
 	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
 	RotateInstanceTo(index, Rotation);
 }
 
+//인스턴스를 ~만큼 크기변환시키는 함수. 몇 번째 인스턴스인지 Index를 받는 형태로 생성함.
 void CObject2D::ScaleInstance(size_t InstanceID, const DirectX::XMVECTOR& Scaling)
 {
 	using namespace DirectX;
@@ -361,12 +379,14 @@ void CObject2D::ScaleInstance(size_t InstanceID, const DirectX::XMVECTOR& Scalin
 	UpdateInstanceWorldMatrix(InstanceID);
 }
 
+//인스턴스의 이름을 받는 형태로 생성하는 ScaleInstance 함수 오버로드 함수.
 void CObject2D::ScaleInstance(const std::string& Name, const DirectX::XMVECTOR& Scaling)
 {
 	size_t index{ m_UMapInstanceNameToIndex.at(Name) };
 	ScaleInstance(index, Scaling);
 }
 
+//인스턴스를 ~로 크기변환시키는 함수. 몇 번째 인스턴스인지 Index를 받는 형태로 생성함.
 void CObject2D::ScaleInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Scaling)
 {
 	using namespace DirectX;
@@ -375,6 +395,7 @@ void CObject2D::ScaleInstanceTo(size_t InstanceID, const DirectX::XMVECTOR& Scal
 	UpdateInstanceWorldMatrix(InstanceID);
 }
 
+//인스턴스의 이름을 받는 형태로 생성하는 ScaleInstanceTo 함수 오버로드 함수.
 void CObject2D::ScaleInstanceTo(const std::string& Name, const DirectX::XMVECTOR& Scaling)
 {
 	using namespace DirectX;
@@ -383,6 +404,7 @@ void CObject2D::ScaleInstanceTo(const std::string& Name, const DirectX::XMVECTOR
 	ScaleInstanceTo(index, Scaling);
 }
 
+//인스턴스의 속도를 Set하는 함수.
 void CObject2D::SetInstanceVelocity(size_t InstanceID, const DirectX::XMVECTOR& Velocity)
 {
 	m_vInstanceCPUData[InstanceID].Velocity = Velocity;
@@ -390,6 +412,7 @@ void CObject2D::SetInstanceVelocity(size_t InstanceID, const DirectX::XMVECTOR& 
 	m_vInstanceCPUData[InstanceID].bUsePhysics = true;
 }
 
+//인스턴스의 속도를 리턴하는 함수.
 const DirectX::XMVECTOR& CObject2D::GetInstanceVelocity(size_t InstanceID)
 {
 	return m_vInstanceCPUData[InstanceID].Velocity;

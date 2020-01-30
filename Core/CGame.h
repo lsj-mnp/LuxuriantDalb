@@ -8,6 +8,8 @@
 #include "CBullet.h"
 #include "CEnemyPool.h"
 #include "CPhysicsEngine.h"
+#include "CObject2DLine.h"
+#include "CBoundingCircleRep.h"
 #include <chrono>
 
 class CGame
@@ -71,6 +73,9 @@ public:
 	CShader* GetShader(EShader eShader);
 
 public:
+	const DirectX::XMMATRIX& GetProjectionMatrix() const;
+
+public:
 	void SpawnPlayerBullet();
 
 public:
@@ -94,6 +99,11 @@ public:
 	float GetWidth() const;
 
 	float GetHeight() const;
+
+public:
+	ID3D11Device* GetDevice();
+
+	ID3D11DeviceContext* GetDeviceContext();
 
 private:
 	HINSTANCE m_hInstance{};
@@ -120,6 +130,9 @@ private:
 
 private:
 	std::unique_ptr<CBullet> m_PlayerBullet{};
+
+private:
+	std::unique_ptr<CBoundingCircleRep> m_Circle{};
 
 private:
 	std::vector<std::unique_ptr<CObject2D>> m_vObject2Ds{};

@@ -25,7 +25,7 @@ private:
 
 private:
 	Microsoft::WRL::ComPtr<ID3DBlob> m_Blob{};
-	Microsoft::WRL::ComPtr<ID3D11DeviceChild> m_Shader{};
+	Microsoft::WRL::ComPtr<ID3D11DeviceChild> m_VShader{};
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout{};
 
 	EShaderType m_eShaderType{};

@@ -152,6 +152,12 @@
     <FxCompile Include="Shader\PSDefault.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\VSLine.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PSLine.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="DirectXTK\DirectXTK.lib">
@@ -163,6 +169,9 @@
       <Filter>DirectXTK</Filter>
     </None>
     <None Include="Shader\iDefault.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\iLine.hlsli">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
