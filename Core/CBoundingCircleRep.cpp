@@ -20,7 +20,7 @@ void CBoundingCircleRep::Create()
 
 	DirectX::XMVECTOR color{ DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f) };
 
-	float radius{ 100.0f };
+	float radius{ 1.0f };
 
 	float theta_unit{ DirectX::XM_2PI / (float)count };
 
@@ -42,4 +42,9 @@ void CBoundingCircleRep::Create()
 void CBoundingCircleRep::Draw(const DirectX::XMMATRIX& ProjectionMatrix)
 {
 	m_Circle->Draw(ProjectionMatrix);
+}
+
+CObject2DLine* CBoundingCircleRep::GetObject2DLine()
+{
+	return m_Circle.get();
 }

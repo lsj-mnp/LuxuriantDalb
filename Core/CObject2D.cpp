@@ -1,5 +1,7 @@
 #include "CObject2D.h"
 #include "CConstantBuffer.h"
+#include "CBoundingCircleRep.h"
+#include "CObject2DLine.h"
 
 using std::string;
 using std::to_string;
@@ -113,25 +115,22 @@ void CObject2D::Create(const std::string& Name, const DirectX::XMFLOAT2& Size, c
 	m_Model2D = std::make_unique<CModel2D>(m_PtrDevice, m_PtrDeviceContext);
 	m_Model2D->CreateRectangle(Size);
 
-	m_Texture = std::make_unique<CTexture>(m_PtrDevice, m_PtrDeviceContext);
-	m_Texture->CreateFromFile(TextureFileName);
-	m_Texture->SetShaderType(EShaderType::PixelShader);
+	if (!m_Texture)
+	{
+		m_Texture = std::make_unique<CTexture>(m_PtrDevice, m_PtrDeviceContext);
+		m_Texture->CreateFromFile(TextureFileName);
+		m_Texture->SetShaderType(EShaderType::PixelShader);
+	}
 }
 
 void CObject2D::CreateAsTextureSize(const std::string& Name, const std::string& TextureFileName)
 {
-	m_Name = Name;
-
-	m_CBSpace = make_unique<CConstantBuffer>(m_PtrDevice, m_PtrDeviceContext);
-	m_CBSpace->Create(EShaderType::VertexShader, sizeof(m_CBSpaceData), &m_CBSpaceData);
-
 	m_Texture = std::make_unique<CTexture>(m_PtrDevice, m_PtrDeviceContext);
 	m_Texture->CreateFromFile(TextureFileName);
 	m_Texture->SetShaderType(EShaderType::PixelShader);
 	D3D11_TEXTURE2D_DESC Texture2DDesc{ m_Texture->GetTextureDesc() };
 
-	m_Model2D = std::make_unique<CModel2D>(m_PtrDevice, m_PtrDeviceContext);
-	m_Model2D->CreateRectangle(DirectX::XMFLOAT2((float)Texture2DDesc.Width, (float)Texture2DDesc.Height));
+	Create(Name, DirectX::XMFLOAT2((float)Texture2DDesc.Width, (float)Texture2DDesc.Height), TextureFileName);
 }
 
 void CObject2D::SetVisibleArea(const DirectX::XMFLOAT2& PixelSpaceOffset)
@@ -182,6 +181,29 @@ void CObject2D::Draw(const DirectX::XMMATRIX& ProjectionMatrix)
 	{
 		m_PtrDeviceContext->DrawIndexed(m_Model2D->GetIndexCount(), 0, 0);
 	}
+
+#ifdef _DEBUG
+	if (m_BoundingCircle)
+	{
+
+		if (HasInstances())
+		{
+			for (const auto& instance : m_vInstanceCPUData)
+			{
+				m_BoundingCircle->GetObject2DLine()->TranslateTo(instance.Translation);
+
+				m_BoundingCircle->Draw(ProjectionMatrix);
+			}
+		}
+		else
+		{
+			m_BoundingCircle->GetObject2DLine()->TranslateTo(m_ComponentTransform.Translation);
+
+			m_BoundingCircle->Draw(ProjectionMatrix);
+		}
+	}
+#endif // _DEBUG
+
 }
 
 //~만큼 이동시키는 함수.
@@ -267,6 +289,26 @@ void CObject2D::UpdateWorldMatrix()
 
 	m_ComponentTransform.WorldMatrix = Scaling * Rotation * Translation;
 }
+
+#ifdef _DEBUG
+void CObject2D::SetBoundingCircleRadius(float Radius)
+{
+	if (!m_BoundingCircle)
+	{
+		m_BoundingCircle = std::make_unique<CBoundingCircleRep>(m_PtrDevice, m_PtrDeviceContext);
+		m_BoundingCircle->Create();
+	}
+
+	if (Radius == 0)
+	{
+		float half_width{ m_Texture->GetTextureDesc().Width * 0.5f };
+		float half_height{ m_Texture->GetTextureDesc().Height * 0.5f };
+		Radius = sqrt((half_width * half_width) + (half_height * half_height));
+	}
+
+	m_BoundingCircle->GetObject2DLine()->ScaleTo(DirectX::XMVectorSet(Radius, Radius, 1, 0));
+}
+#endif // _DEBUG
 
 bool CObject2D::InsertInstance(const std::string& Name)
 {

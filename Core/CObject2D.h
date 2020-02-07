@@ -5,6 +5,7 @@
 
 class CShader;
 class CConstantBuffer;
+class CBoundingCircleRep;
 
 struct SBoundingCircle
 {
@@ -170,6 +171,7 @@ public:
 
 	void CreateAsTextureSize(const std::string& Name, const std::string& TextureFileName);
 
+public:
 	void SetVisibleArea(const DirectX::XMFLOAT2& PixelSpaceOffset);
 
 	void SetPixelShader(CShader* const PixelShader);
@@ -192,6 +194,7 @@ public:
 
 	void ScaleTo(const DirectX::XMVECTOR& Scaling);
 
+public:
 	const DirectX::XMMATRIX& GetWorldMatrix() const;
 
 	const DirectX::XMVECTOR& GetTranslation() const;
@@ -200,6 +203,11 @@ public:
 
 private:
 	void UpdateWorldMatrix();
+
+#ifdef _DEBUG
+public:
+	void SetBoundingCircleRadius(float Radius = 0);
+#endif // _DEBUG
 
 public:
 	bool InsertInstance(const std::string& Name);
@@ -271,4 +279,9 @@ private:
 private:
 	std::unique_ptr<CConstantBuffer> m_CBSpace{};
 	SCBSpace m_CBSpaceData{};
+
+#ifdef _DEBUG
+private:
+	std::unique_ptr<CBoundingCircleRep> m_BoundingCircle{};
+#endif
 };

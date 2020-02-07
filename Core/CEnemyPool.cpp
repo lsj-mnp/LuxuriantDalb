@@ -50,10 +50,15 @@ void CEnemyPool::SpawnEnemy(const std::string& EnemyTypeName, const DirectX::XMV
 	enemy_type->TranslateInstanceTo(enemy_type->GetInstanceCount() - 1, Position);
 
 	enemy_type->SetInstanceVelocity(enemy_type->GetInstanceCount() - 1, MovingDirection * enemy_type_data.Speed);
+
+	enemy_type->SetBoundingCircleRadius(enemy_type_data.BoundingCircleRadius);
 }
 
 void CEnemyPool::Draw(const DirectX::XMMATRIX& ProjectionMatrix)
 {
+	m_VS->Use();
+	m_PS->Use();
+
 	for (auto& Enemy : m_vEnemyTypes)
 	{
 		Enemy->Draw(ProjectionMatrix);

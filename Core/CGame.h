@@ -132,9 +132,6 @@ private:
 	std::unique_ptr<CBullet> m_PlayerBullet{};
 
 private:
-	std::unique_ptr<CBoundingCircleRep> m_Circle{};
-
-private:
 	std::vector<std::unique_ptr<CObject2D>> m_vObject2Ds{};
 	std::unordered_map<std::string, size_t> m_UMapObject2DNameToIndex{};
 

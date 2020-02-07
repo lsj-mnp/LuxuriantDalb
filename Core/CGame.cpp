@@ -29,9 +29,6 @@ void CGame::Create(HINSTANCE hInstance, WNDPROC WndProc, const string& WindowNam
 
 	m_PlayerBullet = make_unique<CBullet>(m_Device.Get(), m_DeviceContext.Get());
 	m_PlayerBullet->Create("Asset/bullet.png");
-
-	m_Circle = std::make_unique<CBoundingCircleRep>(m_Device.Get(), m_DeviceContext.Get());
-	m_Circle->Create();
 }
 
 
@@ -237,6 +234,7 @@ void CGame::CreateEnemyPool()
 	EnemySlave.Damage = 10.0f;
 	EnemySlave.HitPoint = 10.0f;
 	EnemySlave.Speed = 100.0f;
+	EnemySlave.BoundingCircleRadius = 80.0f;
 
 	m_EnemyPool->AddEnemyType("EnemySlave", "Asset/enemy_slave.png", EnemySlave);
 
@@ -329,9 +327,8 @@ void CGame::Draw()
 
 		m_PlayerBullet->Draw(m_ProjectionMatrix);
 
-		m_Circle->Draw(m_ProjectionMatrix);
-
 		CObject2D* const PlayerObject2D{ m_vObject2Ds[m_PlayerObject2DIndex].get() };
+
 		DrawObject2D(PlayerObject2D);
 	}
 }

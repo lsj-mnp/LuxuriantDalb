@@ -11,6 +11,7 @@ struct SEnemyTypeData
 	float HitPoint{};
 	float Damage{};
 	float Speed{};
+	float BoundingCircleRadius{ 100.0f };
 };
 
 class CEnemyPool

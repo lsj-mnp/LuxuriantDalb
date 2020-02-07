@@ -17,7 +17,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Game.Create(hInstance, WndProc, "GameBase");
 
 	Game.AddObject2D("Player", DirectX::XMFLOAT2(220, 220), "Asset/dalb_anim.png");
-	Game.GetObject2DPtr("Player")->ScaleTo(DirectX::XMVectorSet(0.5f, 0.5f, 1, 0));
+	{
+		CObject2D* const Player{ Game.GetObject2DPtr("Player") };
+		Player->ScaleTo(DirectX::XMVectorSet(0.5f, 0.5f, 1, 0));
+		Player->SetBoundingCircleRadius(60.0f);
+	}
 
 	Game.AddObject2D("BG", DirectX::XMFLOAT2(1280.0f, 1280.0f), "Asset/BackGround.png");
 

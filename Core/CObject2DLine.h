@@ -54,6 +54,10 @@ public:
 
 	void Draw(const DirectX::XMMATRIX& ProjectionMatrix);
 
+	void TranslateTo(const DirectX::XMVECTOR& Translation);
+
+	void ScaleTo(const DirectX::XMVECTOR& Scaling);
+
 private:
 	ID3D11Device* const m_PtrDevice{};
 	ID3D11DeviceContext* const m_PtrDeviceContext{};

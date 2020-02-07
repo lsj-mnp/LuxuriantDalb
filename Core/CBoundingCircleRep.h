@@ -14,6 +14,8 @@ public:
 
 	void Draw(const DirectX::XMMATRIX& ProjectionMatrix);
 
+	CObject2DLine* GetObject2DLine();
+
 private:
 	ID3D11Device* const m_PtrDevice{};
 	ID3D11DeviceContext* const m_PtrDeviceContext{};

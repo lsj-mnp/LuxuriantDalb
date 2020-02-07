@@ -68,3 +68,13 @@ void CObject2DLine::Draw(const DirectX::XMMATRIX& ProjectionMatrix)
 	
 	m_PtrDeviceContext->Draw(m_vLines.size() * 2, 0);
 }
+
+void CObject2DLine::TranslateTo(const DirectX::XMVECTOR& Translation)
+{
+	m_ComponentTransform.Translation = Translation;
+}
+
+void CObject2DLine::ScaleTo(const DirectX::XMVECTOR& Scaling)
+{
+	m_ComponentTransform.Scaling = Scaling;
+}
